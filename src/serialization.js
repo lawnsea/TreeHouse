@@ -108,7 +108,7 @@ define(['underscore'], function () {
                     var child = deserializeNode(el);
 
                     // overwrite child index with correct value
-                    child.__xhibosChildIndex = index;
+                    child.__treehouseChildIndex = index;
                     result.appendChild(child);
                 });
             } else if (!_.isUndefined(node.contents)) {
@@ -119,19 +119,19 @@ define(['underscore'], function () {
             throw (typeof node) + ' is not a valid JSONML node';
         }
 
-        result.__xhibosChildIndex = 0; // this may get overwritten in the caller
+        result.__treehouseChildIndex = 0; // this may get overwritten in the caller
         return result;
     }
 
     function getNodeIndex(node) {
-        var index = node.__xhibosChildIndex;
+        var index = node.__treehouseChildIndex;
         var parent = node.parentNode;
         var i, len;
 
         // FIXME: workaround to ignore incorrect cached child index
-        parent.__xhibosDirty = true;
+        parent.__treehouseDirty = true;
 
-        if (!_.isNumber(index) || parent.__xhibosDirty === true) {
+        if (!_.isNumber(index) || parent.__treehouseDirty === true) {
             for (i = 0, len = parent.childNodes.length; i < len; i++) {
                 if (parent.childNodes[i] === node) {
                     index = i;

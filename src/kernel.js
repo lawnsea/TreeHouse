@@ -6,13 +6,13 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
     var sandboxes = {};
     var sandboxIndex = 0;
     var messageHandlers = {};
-    var STYLE_ATTRIBUTE_PREFIX = 'data-xzibos-style-';
+    var STYLE_ATTRIBUTE_PREFIX = 'data-treehouse-style-';
 
     function setStyleAttributes(el) {
         var toRemove = [];
         var i, attr, attrs;
 
-        // Map data-xzibos-style-foo -> el.style.foo
+        // Map data-treehouse-style-foo -> el.style.foo
         if (el.hasAttributes()) {
             attrs = el.attributes;
 
@@ -66,9 +66,9 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
                 el.style.display = 'none';
             }
 
-            if (el.__xzibosNextSibling) {
-                ev.relatedNode.insertBefore(el, el.__xzibosNextSibling);
-                delete el.__xzibosNextSibling;
+            if (el.__treehouseNextSibling) {
+                ev.relatedNode.insertBefore(el, el.__treehouseNextSibling);
+                delete el.__treehouseNextSibling;
             } else {
                 ev.relatedNode.appendChild(el);
             }
@@ -83,12 +83,13 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
         // TODO: handle scripts in HEAD; probably need to just prefix
         //       traversals with 'body' or 'head'
         var scripts = Array.prototype.slice.apply(
-                document.body.querySelectorAll('script[type="text/x-xhibos-javascript"]'));
+                document.body.querySelectorAll('script[type="text/x-treehouse-javascript"]'));
         var children = [];
         var i, j, k, len, worker, selector, script;
 
         scripts.forEach(function (script, scriptIndex, scripts) {
-            var name = script.getAttribute('data-xhibos-sandbox-name') || 'sandbox' + sandboxIndex;
+            var name = script.getAttribute('data-treehouse-sandbox-name') || 
+                'sandbox' + sandboxIndex;
             var sandbox;
 
             if (sandboxes[name] === void undefined) {
@@ -102,7 +103,7 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
             // add children to sandbox
             // TODO: check if the node or an ancestor of the node is already
             //       owned by another sandbox
-            sandbox.childNodeSelectors = script.getAttribute('data-xhibos-sandbox-children');
+            sandbox.childNodeSelectors = script.getAttribute('data-treehouse-sandbox-children');
             if (sandbox.childNodeSelectors) {
                 sandbox.childNodeSelectors.split(',').forEach(function (selector) {
                     var nodes = document.querySelectorAll(selector);
@@ -113,7 +114,7 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
             sandbox.addChild(script);
 
             /*
-            sandbox.bodyNodeSelector = script.getAttribute('data-xhibos-sandbox-body');
+            sandbox.bodyNodeSelector = script.getAttribute('data-treehouse-sandbox-body');
             if (sandbox.bodyNodeSelector) {
                 sandbox.body = document.querySelector(sandbox.bodyNodeSelector);
             }

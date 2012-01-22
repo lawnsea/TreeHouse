@@ -22,7 +22,7 @@ function(serialization, SortedSet, validate, basePolicy) {
                 // the last element of the target is the new node to add
                 e.target = serialization.deserializeNode(serializedTarget.pop());
                 e.__serializedTarget = serializedTarget.slice(0);
-                e.target.__xzibosNextSibling = serialization.traverseToNode(
+                e.target.__treehouseNextSibling = serialization.traverseToNode(
                     serializedTarget, this._children.get(serializedTarget.shift()));
             }
 
@@ -89,7 +89,7 @@ function(serialization, SortedSet, validate, basePolicy) {
     }
 
     Sandbox = function (name, loader, attributeWhitelist) {
-        loader = loader || 'lib/loader.js';
+        loader = loader || '../src/loader.js';
         this.name = name;
         this._worker = new Worker(loader);
         this._children = new SortedSet(compareNodes);

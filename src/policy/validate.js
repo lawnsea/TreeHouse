@@ -1,5 +1,5 @@
 define(['serialization', 'util'], function (serialization, util) {
-    var STYLE_ATTRIBUTE_PREFIX = 'data-xzibos-style-';
+    var STYLE_ATTRIBUTE_PREFIX = 'data-treehouse-style-';
 
     function checkAttribute(policy, value, name) {
         var rule = policy.dom.attributes[name];

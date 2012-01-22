@@ -139,8 +139,8 @@ var initBroker;
         var eventHandlers = {};
         var changingDOM = false;
         var CSSStyleDeclaration = jsdom.dom.level3.core.CSSStyleDeclaration;
-        var STYLE_PROPERTY_PREFIX = '__xzibosStyle-';
-        var STYLE_ATTRIBUTE_PREFIX = 'data-xzibos-style-';
+        var STYLE_PROPERTY_PREFIX = '__treehouseStyle-';
+        var STYLE_ATTRIBUTE_PREFIX = 'data-treehouse-style-';
         var DISPATCHED_EVENTS = {
             'abort': true, 'blur': true, 'click': true, 'error': true, 'focus': true, 'focusin': true, 
             'focusout': true, 'keydown': true, 'keypress': true, 'keyup': true, 'load': true,
@@ -292,7 +292,7 @@ var initBroker;
             }
             // XXX: Revisit. Are you sure don't need to check the base policy here?
 
-            e.__xhibosEventTime = new Date();
+            e.__treehouseEventTime = new Date();
             console.debug('Dispatching DOMSubtreeModified event:', e);
             _self.postMessage.call(self, {
                 method: 'dispatchEvent',
@@ -305,17 +305,17 @@ var initBroker;
 }());
 
 require({
-    baseUrl: '../lib',
+    baseUrl: '../src',
     packages: [{
         name: 'jsdom',
-        location: '../jsdom/lib',
+        location: '../lib/jsdom/lib',
         main: 'jsdom'
     }, {
         name: 'node-htmlparser',
-        location: '../jsdom/node-htmlparser'
+        location: '../lib/jsdom/node-htmlparser'
     }, {
         name: 'underscore',
-        location: '../underscore',
+        location: '../lib/underscore',
         main: 'underscore'
     }]
 }, [
