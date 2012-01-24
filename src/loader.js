@@ -13,11 +13,11 @@ var initBroker;
         'URIError', 'Uint16Array', 'Uint32Array', 'Uint8Array',
         'WebKitBlobBuilder', 'WebKitFlags', 'WorkerLocation', 'clearInterval',
         'clearTimeout', 'close', 'decodeURI', 'decodeURIComponent',
-        'dispatchEvent', 'doc', 'document', 'encodeURI', 'encodeURIComponent',
-        'escape', 'eval', 'isFinite', 'isNaN', 'location', 'navigator',
-        'onerror', 'parseFloat', 'parseInt', 'removeEventListener', 'self',
-        'setInterval', 'setTimeout', 'undefined', 'unescape', 'webkitURL',
-        'win', 'window',
+        'dispatchEvent', 'encodeURI', 'encodeURIComponent', 'escape', 'eval',
+        'isFinite', 'isNaN', 'location', 'navigator', 'onerror', 'parseFloat',
+        'parseInt', 'removeEventListener', 'self', 'setInterval', 'setTimeout',
+        'undefined', 'unescape', 'webkitURL',
+        'win', 'window', 'doc', 'document', 'initBroker'
     ];
     var blacklist = ['Worker'];
     var nop = function (){};
@@ -45,6 +45,7 @@ var initBroker;
             return new _self.XMLHttpRequest();
         },
     };
+    var beenWrapped = {};
     var keys = [], k;
     var basePolicy, policy, importScriptsRule, i, validate;
 
@@ -127,8 +128,10 @@ var initBroker;
 
     for (i = 0; i < keys.length; i++) {
         k = keys[i];
-        if (ignored[k]) { continue; }
-        wrapProperty(k, self[k]);
+        if (!ignored[k] && !beenWrapped[k]) {
+            beenWrapped[k] = true;
+            wrapProperty(k, self[k]);
+        }
     }
 
     initBroker = function(console, jsdom, serialization, validateLib, util) {
