@@ -1,0 +1,278 @@
+<html>
+<head>
+<title>DOMTRIS - A DHTML Tetris clone by Jacob Seidelin</title>
+
+<meta content='A JavaScript / DHTML Tetris clone made with only JavaScript and the DOM by Jacob Seidelin.' name='description'/>
+
+<style>
+
+/* http://meyerweb.com/eric/tools/css/reset/ */
+/* v1.0 | 20080212 */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* end css reset */
+/* ---------------------------- */
+
+
+body {
+	padding : 10px;
+}
+
+div {
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+
+#tetris {
+	width : 516px;
+	height : 538px;
+	margin : 10px auto;
+	background-color : maroon;
+	position : relative;
+	border : 3px outset maroon;
+}
+
+#footer {
+	width : 516px;
+	position : relative;
+	margin : 10px auto;
+	text-align : center;
+}
+
+#gamefield {
+	background-color : black;
+	position : relative;
+	overflow : hidden;
+	left : 24px;
+	top : 24px;
+	border : 3px inset maroon;
+	width : 247px;
+	height : 487px;
+
+}
+
+.tetris-block {
+	border : 3px outset;
+	position : absolute;
+	width : 23px;
+	height : 23px;
+	overflow : hidden;
+	margin-left : 1px;
+	margin-top : 1px;
+}
+
+
+#tetris-next-piece {
+	background-color : black;
+	width : 192px;
+	height : 123px;
+	position : absolute;
+	left : 294px;
+	top : 60px;
+	border : 3px inset maroon;
+}
+
+#gamefield {
+	color:white;
+	font-family:lucida console;
+	font-weight:bold;
+	font-size : 16px;
+	text-align:center;
+}
+
+#tetris-next-piece-text, #tetris-score-text, #tetris-level-text, #tetris-lines-text, #bottom-stuff {
+	position : absolute;
+	left : 294px;
+	width : 192px;
+	padding-left : 6px;
+	padding-top : 3px;
+	padding-bottom : 5px;
+	border : 3px inset maroon;
+	font-family : lucida console;
+	font-weight : bold;
+	color : white;
+	font-size : 16px;
+	background-color : black;
+}
+
+#tetris-next-piece-text {
+	top : 24px;
+}
+
+#tetris-level-text {
+	top : 196px;
+}
+
+#tetris-lines-text {
+	top : 240px;
+}
+
+
+#tetris-score-text {
+	top : 284px;
+}
+
+#bottom-stuff {
+	top : 328px;
+	height : 184px;
+}
+
+#logo {
+	margin-top : 12px;
+	margin-bottom : 12px;
+	width : 100%;
+	text-align:center;
+}
+
+#byline {
+	position : absolute;
+	bottom : 0px;
+	margin-bottom : 6px;
+}
+
+#restart-link a {
+	color : white;
+}
+
+#blog-link a {
+	color : white;
+}
+
+</style>
+
+
+</head>
+<body>
+
+
+<div id="tetris" tabindex="0">
+	<div id="gamefield">
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		Welcome to DOMTRIS!<br/>
+		<br/><br/>
+		Keys:<br/>
+		<br/>
+		Move: Left / Right<br/>
+		<br/>
+		Rotate: Up / SPACE<br/>
+		<br/>
+		Drop: Enter<br/>
+		<br/>
+		Pause : P<br/>
+		<br/>
+		Save game: S<br/>
+		<br/>
+		<br/>
+		Press SPACE to start<br/>
+		<br/>
+		<br/>
+		Clear multiple lines in one go for more points.
+	</div>
+	<div id="tetris-next-piece-text">Next piece</div>
+	<div id="tetris-next-piece"></div>
+	<div id="tetris-score-text"></div>
+	<div id="tetris-level-text"></div>
+	<div id="tetris-lines-text"></div>
+
+	<div id="bottom-stuff">
+		<div id="logo"><span id="logo_1">D</span><span id="logo_2">O</span><span id="logo_3">M</span><span id="logo_4">T</span><span id="logo_5">R</span><span id="logo_6">I</span><span id="logo_7">S</span></div>
+		<div id="description">A tetris clone made with DOM & JavaScript by <a href="http://blog.nihilogic.dk/">Jacob Seidelin</a><br/><br/>
+		<!--<span id="restart-link"><a href="/labs/tetris/">Restart game</a></span><br/><br/>-->
+		<span id="blog-link"><a href="http://blog.nihilogic.dk/">Visit the blog</a></span><br/><br/>
+		<span id="blog-link"><a href="http://games.nihilogic.dk/">More games</a></span>
+		</div>
+	</div>
+
+</div>
+<script src="demos/tetris.js"
+  type="text/x-treehouse-javascript"
+  data-treehouse-sandbox-name="worker1"
+  data-treehouse-sandbox-children="#tetris"
+></script>
+<div id="footer">
+[&nbsp;<a href="http://games.nihilogic.dk/" style="font-family:arial;font-size:12px;">Click here for more JavaScript games</a>&nbsp;]
+</div>
+  <script src="../lib/require.js"></script>
+  <script>
+  // web worker compat
+  window.doc = document;
+  window.win = window;
+
+  require({
+        baseUrl: '../src',
+        packages: [{
+              name: 'jsdom',
+              location: '../lib/jsdom/lib',
+              main: 'jsdom'
+          }, {
+              name: 'node-htmlparser',
+              location: '../lib/jsdom/node-htmlparser'
+          }, {
+            name: 'underscore',
+            location: '../lib/underscore',
+            main: 'underscore'
+        }]
+    }, [ 'kernel' ], function (kernel) {
+    console.debug('Kernel loaded.');
+    kernel.initialize();
+    console.debug('Kernel initialized.');
+  });
+  </script>
+
+</body>
+</html>
+
