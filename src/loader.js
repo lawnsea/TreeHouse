@@ -302,6 +302,8 @@ var initBroker;
                 params: [ e ]
             });
         }, false);
+
+        delete initBroker;
     };
 
     importScriptsImpl('require.js');
