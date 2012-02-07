@@ -1,4 +1,4 @@
-define(['serialization'], function (serialization) {
+define(['treehouse/serialization'], function (serialization) {
     return {
         getConsole: function (postMessage) {
             var console = {};

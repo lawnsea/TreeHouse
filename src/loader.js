@@ -27,7 +27,7 @@ var initBroker;
     var closeImpl = close;
     var wrapped = {
         importScripts: function () {
-            if (self.console) {
+            if (self.console && self.console.error) {
                 self.console.error('Importing', arguments[0]);
             }
             return importScriptsImpl(arguments[0]);
@@ -238,8 +238,8 @@ var initBroker;
                 changingDOM = false;
 
                 if (e.target.tagName.toLowerCase() === 'script') {
-                    console.error('Importing script', '../' + e.target.src);
-                    importScriptsImpl('../' + e.target.src);
+                    console.error('Importing script', e.target.src);
+                    importScriptsImpl(e.target.src);
                 }
             }
         };
@@ -310,10 +310,10 @@ var initBroker;
 }());
 
 require({
-    baseUrl: '../src',
+    baseUrl: './',
     packages: [{
         name: 'jsdom',
-        location: '../lib/jsdom/lib',
+        location: '../lib/jsdom',
         main: 'jsdom'
     }, {
         name: 'node-htmlparser',
@@ -322,8 +322,11 @@ require({
         name: 'underscore',
         location: '../lib/underscore',
         main: 'underscore'
+    }, {
+        name: 'treehouse',
+        location: './'
     }]
 }, [
-    'worker/console', 'jsdom', 'serialization', 'policy/validate', 'util',
-    'underscore'
+    'treehouse/worker/console', 'jsdom', 'treehouse/serialization', 'treehouse/policy/validate',
+    'treehouse/util', 'underscore'
 ], initBroker);

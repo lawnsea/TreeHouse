@@ -10,6 +10,7 @@
     data-treehouse-sandbox-name="worker1"
     data-treehouse-sandbox-children="#root"
   ></script>
+  <script src="../lib/jsdom/ie10-compatibility.js"></script>
   <script src="../lib/require.js"></script>
   <script>
   // web worker compat
@@ -20,7 +21,7 @@
         baseUrl: '../src',
         packages: [{
               name: 'jsdom',
-              location: '../lib/jsdom/lib',
+              location: '../lib/jsdom',
               main: 'jsdom'
           }, {
               name: 'node-htmlparser',
@@ -29,6 +30,9 @@
             name: 'underscore',
             location: '../lib/underscore',
             main: 'underscore'
+        }, {
+            name: 'treehouse',
+            location: './'
         }]
     }, [ 'kernel' ], function (kernel) {
     kernel.initialize();

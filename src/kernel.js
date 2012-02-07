@@ -1,6 +1,6 @@
 define([
-    'sandbox', 'util', 'kernel/allowed-attributes', 'kernel/allowed-elements',
-    'kernel/allowed-style-properties'
+    'treehouse/sandbox', 'treehouse/util', 'treehouse/kernel/allowed-attributes',
+    'treehouse/kernel/allowed-elements', 'treehouse/kernel/allowed-style-properties'
 ], 
 function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperties) {
     var sandboxes = {};

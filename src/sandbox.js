@@ -1,5 +1,6 @@
 define([
-    'serialization', 'sorted-set', 'policy/validate', 'policy/base-monitor', 'underscore'
+    'treehouse/serialization', 'treehouse/sorted-set', 'treehouse/policy/validate',
+    'treehouse/policy/base-monitor', 'underscore'
 ], 
 function(serialization, SortedSet, validate, basePolicy) {
     var Sandbox;

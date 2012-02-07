@@ -1,4 +1,4 @@
-define(['serialization', 'util'], function (serialization, util) {
+define(['treehouse/serialization', 'treehouse/util'], function (serialization, util) {
     var STYLE_ATTRIBUTE_PREFIX = 'data-treehouse-style-';
 
     function checkAttribute(policy, value, name) {
