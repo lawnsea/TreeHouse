@@ -28,7 +28,9 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
             }
 
             for (i = 0; i < toRemove.length; i++) {
-                el.attributes.removeNamedItem(toRemove[i]);
+                if (el.hasAttribute(toRemove[i])) {
+                    el.removeAttribute(toRemove[i]);
+                }
             }
         }
 

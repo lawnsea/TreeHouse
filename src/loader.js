@@ -155,6 +155,7 @@ var initBroker;
         var k, i;
         var addEventListenerImpl;
 
+        importScriptsImpl('../lib/jsdom/ie10-compatibility.js');
         console = self.console = console.getConsole(postMessageImpl);
 
         console.debug('Started.');

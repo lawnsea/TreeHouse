@@ -211,7 +211,9 @@ define(['underscore'], function () {
         }
 
         event.view = window;
+        // XXX: This is a hack. We should call initEvent instead.
         event._type = event.type;
+        event._bubbles = event.bubbles;
         return event;
     }
 
