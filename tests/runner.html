@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <title>Jasmine Spec Runner</title>
+    <link rel="shortcut icon" type="image/png" href="jasmine-1.1.0/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="jasmine-1.1.0/jasmine.css">
+    <script type="text/javascript" src="jasmine-1.1.0/jasmine.js"></script>
+    <script type="text/javascript" src="jasmine-1.1.0/jasmine-html.js"></script>
+    <script src="../lib/require.js"></script>
+
+    <script type="text/javascript">
+    require({
+        baseUrl: '../src',
+        packages: [{
+              name: 'jsdom',
+              location: '../lib/jsdom',
+              main: 'jsdom'
+          }, {
+              name: 'node-htmlparser',
+              location: '../lib/jsdom/node-htmlparser'
+          }, {
+              name: 'underscore',
+              location: '../lib/underscore',
+              main: 'underscore'
+          }, {
+              name: 'treehouse',
+              location: './'
+          }, {
+              name: 'spec',
+              location: '../tests/spec',
+          }]
+        },
+        ['spec/main'],
+        function() {
+            function runTests() {
+                console.log('Loaded!');
+                var jasmineEnv = jasmine.getEnv();
+                jasmineEnv.updateInterval = 1000;
+
+                var trivialReporter = new jasmine.TrivialReporter();
+
+                jasmineEnv.addReporter(trivialReporter);
+
+                jasmineEnv.specFilter = function(spec) {
+                    return trivialReporter.specFilter(spec);
+                };
+                jasmineEnv.execute();
+            }
+            runTests();
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>
