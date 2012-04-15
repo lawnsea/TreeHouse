@@ -32,11 +32,13 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
 
     function findRule(policy, path) {
         var ruleset = policy['!api'];
+        var parent = null;
         var searchpath = path.slice();
         var element, rule;
 
         // starting from leftmost path element, find the most specific ruleset
         while (isRuleset(ruleset) && searchpath.length > 0) {
+            parent = ruleset;
             element = searchpath.shift();
             ruleset = ruleset[element];
         }
@@ -54,6 +56,10 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
                 // If the most specific match is a boolean, its value determines
                 // whether any descendant is allowed or forbidden
                 rule = ruleset;
+            } else if (isUndefined(ruleset) && isObject(parent) && parent !== null) {
+                // If we didn't match and the rule that didn't contain a match
+                // is a ruleset, use its default rule
+                rule = parent['*'];
             } else if (path[path.length - 1] !== '*') {
                 // Otherwise, we didn't match, so try the default rule
 

@@ -63,6 +63,8 @@ function (validate) {
                     toBe(true);
                 expect(validate.checkMethodCall(policy, ['nested', 'ruleset', 'foo'])).
                     toBe(false);
+                expect(validate.checkMethodCall(policy, ['nested', 'other', 'foo'])).
+                    toBe(true);
             });
 
             it('which returns false if the check fails', function () {
