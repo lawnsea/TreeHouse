@@ -45,10 +45,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
 
         if (searchpath.length === 0 && !isUndefined(ruleset) && !isNull(ruleset)) {
             // Exact match
-
-            // if the match is a ruleset, the rule is its !invoke rule.
-            // otherwise it's the match itself
-            rule = isObject(ruleset) ? ruleset['!invoke'] : ruleset;
+            rule = ruleset;
         } else {
             // Not an exact match
 
@@ -69,8 +66,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
             }
         }
 
-        // return the rule if it's a valid method rule and null otherwise
-        return isFunction(rule) || isBoolean(rule) ? rule : null;
+        return rule;
     }
 
     function evaluateMethodRule(rule, name, args) {
@@ -92,9 +88,39 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
         if (rule === null) {
             // no rule found. deny.
             return false;
+        } else if (isObject(rule)) {
+            rule = rule['!invoke'];
         }
 
         var result = evaluateMethodRule(rule, path[path.length - 1], args);
+        return result === true;
+    }
+
+    function evaluatePropertyRule(rule, name, value) {
+        var result = false;
+
+        if (rule === true) {
+            result = true;
+        } else if (isRegExp(rule)) {
+            result = ('' + value).match(rule) !== null;
+        } else if (isFunction(rule)) {
+            result = rule.call(null, name, value);
+        }
+
+        return result;
+    }
+
+    function checkPropertySet(policy, path, value) {
+        var rule = findRule(policy, path);
+
+        if (rule === null) {
+            // no rule found. deny.
+            return false;
+        } else if (isObject(rule)) {
+            rule = rule['!set'];
+        }
+
+        var result = evaluatePropertyRule(rule, path[path.length - 1], value);
         return result === true;
     }
 
@@ -171,6 +197,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
 
     return {
         checkMethodCall: checkMethodCall,
+        checkPropertySet: checkPropertySet,
         checkAttribute: checkAttribute,
         checkNode: checkNode,
         checkEvent: checkEvent,

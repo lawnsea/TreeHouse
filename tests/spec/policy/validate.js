@@ -124,10 +124,7 @@ function (validate) {
                     '*': function () {},
                     'foo': function () {},
                     'fiz': {
-                        '!invoke': function () {},
-                        '!result': {
-                            'biz': function () {}
-                        }
+                        '!set': function () {}
                     },
                     'nested': {
                         '*': true,
@@ -142,9 +139,83 @@ function (validate) {
                     'null': null
                 }
             };
+
             // rule matching
+            it('which, when an exact match exists, checks the matching rule', function () {
+                spyOn(policy['!api'], 'foo');
+
+                validate.checkPropertySet(policy, ['foo']);
+
+                expect(policy['!api'].foo).toHaveBeenCalled();
+            });
+
+            it('which, when an exact match exists if !set were appended, checks the matching rule', function () {
+                spyOn(policy['!api'].fiz, '!set');
+
+                validate.checkPropertySet(policy, ['fiz']);
+
+                expect(policy['!api'].fiz['!set']).toHaveBeenCalled();
+            });
+
+            it('which, when no exact match exists, checks the default rule', function () {
+                spyOn(policy['!api'], '*');
+
+                validate.checkPropertySet(policy, ['applesauce']);
+
+                expect(policy['!api']['*']).toHaveBeenCalled();
+            });
+
+            it('which returns the value if a prefix matches a boolean', function () {
+                expect(validate.checkPropertySet(policy, ['truebool', 'foo'])).toBe(true);
+                expect(validate.checkPropertySet(policy, ['falsebool', 'foo'])).toBe(false);
+            });
+
+            it('which handles nested rules correctly', function () {
+                expect(validate.checkPropertySet(policy, ['nested', 'ruleset', 'rule'])).
+                    toBe(true);
+                expect(validate.checkPropertySet(policy, ['nested', 'ruleset', 'foo'])).
+                    toBe(false);
+                expect(validate.checkPropertySet(policy, ['nested', 'other', 'foo'])).
+                    toBe(true);
+            });
+
+            it('which returns false if the check fails', function () {
+                var fakeResult = false;
+                var fakeFn = function () { return fakeResult; };
+                spyOn(policy['!api'], 'foo').andCallFake(fakeFn);
+
+                expect(validate.checkPropertySet(policy, ['foo'])).toBe(false);
+
+                fakeResult = null;
+                expect(validate.checkPropertySet(policy, ['foo'])).toBe(false);
+
+                fakeResult = 42;
+                expect(validate.checkPropertySet(policy, ['foo'])).toBe(false);
+            });
+
+            it('which returns true if the check passes', function () {
+                spyOn(policy['!api'], 'foo').andCallFake(function () { return true; });
+
+                expect(validate.checkPropertySet(policy, ['foo'])).toBe(true);
+            });
+            
             // rule types
-            // !set
+            it('which returns true if the rule value is true', function () {
+                expect(validate.checkPropertySet(policy, ['truebool'])).toBe(true);
+            });
+
+            it('which returns false if the rule value is false', function () {
+                expect(validate.checkPropertySet(policy, ['falsebool'])).toBe(false);
+            });
+
+            it('which calls the rule with the name and new value if its value is a function', function () {
+                var newValue = 42;
+                spyOn(policy['!api'], 'foo');
+
+                validate.checkPropertySet(policy, ['foo'], 42);
+
+                expect(policy['!api'].foo).toHaveBeenCalledWith('foo', 42);
+            });
         });
 
         describe('provides a checkDOMChange method', function () {
