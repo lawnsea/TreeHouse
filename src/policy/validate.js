@@ -31,9 +31,9 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
     }
 
     function findRule(policy, path) {
-        var ruleset = policy['!api'];
+        var ruleset = policy[path[0]];
         var parent = null;
-        var searchpath = path.slice();
+        var searchpath = path.slice(1);
         var element, rule;
 
         // starting from leftmost path element, find the most specific ruleset
@@ -83,7 +83,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
     }
 
     function checkMethodCall(policy, path, args) {
-        var rule = findRule(policy, path);
+        var rule = findRule(policy, ['!api'].concat(path));
 
         if (rule === null) {
             // no rule found. deny.
@@ -111,7 +111,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
     }
 
     function checkPropertySet(policy, path, value) {
-        var rule = findRule(policy, path);
+        var rule = findRule(policy, ['!api'].concat(path));
 
         if (rule === null) {
             // no rule found. deny.
