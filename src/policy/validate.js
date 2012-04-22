@@ -32,7 +32,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
 
     function findRule(policy, path) {
         var ruleset = policy[path[0]];
-        var parent = null;
+        var parent = policy;
         var searchpath = path.slice(1);
         var element, rule;
 
@@ -57,12 +57,12 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
                 // If we didn't match and the rule that didn't contain a match
                 // is a ruleset, use its default rule
                 rule = parent['*'];
-            } else if (path[path.length - 1] !== '*') {
-                // Otherwise, we didn't match, so try the default rule
-
-                searchpath = path.slice();
-                searchpath[searchpath.length - 1] = '*';
-                rule = findRule(policy, searchpath);
+                
+                // if the default rule is a ruleset, try to find a more specific rule
+                if (isObject(rule)) {
+                    rule = findRule(rule, searchpath.slice());
+                    rule = rule !== null ? rule : parent['*'];
+                }
             }
         }
 
@@ -116,7 +116,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
         if (rule === null) {
             // no rule found. deny.
             return false;
-        } else if (isObject(rule)) {
+        } else if (isObject(rule) && !(rule instanceof RegExp)) {
             rule = rule['!set'];
         }
 
@@ -124,47 +124,75 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
         return result === true;
     }
 
-    function checkAttribute(policy, value, name) {
-        var rule = policy.dom.attributes[name];
-
-        if (name.indexOf(STYLE_ATTRIBUTE_PREFIX) === 0) {
-            name = util.dashedToCamelCase(name.slice(STYLE_ATTRIBUTE_PREFIX.length));
-            rule = policy.dom.attributes.style[name];
-        }
-
-        // FIXME: handle data-* attributes in the policy instead
-        if (name.indexOf('data-') === 0 ||
-            rule === true ||
-            (_.isRegExp(rule) && rule.test(value)) ||
-            (_.isFunction(rule) && rule(value) === true) ||
-            rule === value)
-        {
+    function checkDOMMutation(policy, event, rootNode) {
+        var target = event.target[event.target.length - 1];
+        if (event.attrChange === MutationEvent.prototype.ADDITION) {
+            return checkNode(policy,
+                            serialization.traverseToNode(event.target.slice(0, -1), rootNode),
+                            target);
+        } else if (event.attrChange === MutationEvent.prototype.MODIFICATION) {
+            return checkAttribute(policy, target, event.newValue, event.attrName);
+        } else if (event.attrChange === MutationEvent.prototype.REMOVAL) {
+            // XXX: not sure it's always ok to remove a node
             return true;
         }
-
-        return false;
     }
 
-    function checkNode(policy, node) {
+    function evaluateAttributeRule(rule, name, value) {
+        // properties are evaluated the same as attributes right now, but we
+        // might want to change that in the future
+        return evaluatePropertyRule(rule, name, value);
+    }
+
+    function checkAttribute(policy, node, value, name) {
+        node = serialization.unpackJSONML(node);
+        var path = ['!elements', '!attributes', node.tag];
+        if (name.indexOf(STYLE_ATTRIBUTE_PREFIX) === 0) {
+            name = util.dashedToCamelCase(name.slice(STYLE_ATTRIBUTE_PREFIX.length));
+            path = path.concat(['style', name]);
+        } else {
+            path.push(name);
+        }
+
+        var rule = findRule(policy, path);
+
+        return evaluateAttributeRule(rule, name, value);
+    }
+
+    function evaluateTagRule(rule, node, parent) {
+        var result = false;
+
+        if (rule === true) {
+            result = true;
+        } else if (isFunction(rule)) {
+            result = rule.call(null, node, parent);
+        }
+
+        return result;
+    }
+
+    function checkNode(policy, parent, node) {
         // text nodes are ok
         if (_.isString(node)) {
             return true;
         }
 
+        var serializedNode = node;
         node = serialization.unpackJSONML(node);
 
         // check tag
-        if (!policy.dom.elements[node.tag]) {
+        var rule = findRule(policy, ['!elements', '!tags', node.tag]);
+        if (!evaluateTagRule(rule, parent, node)) {
             return false;
         }
         
         // check attributes
-        if (!_.all(node.attributes, _.bind(checkAttribute, this, policy))) {
+        if (!_.all(node.attributes, _.bind(checkAttribute, this, policy, serializedNode))) {
             return false;
         };
 
         // check content
-        if (_.isArray(node.contents) && !_.all(node.contents, _.bind(checkNode, this, policy))) {
+        if (_.isArray(node.contents) && !_.all(node.contents, _.bind(checkNode, this, policy, node))) {
             return false;
         }
 
@@ -198,6 +226,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
     return {
         checkMethodCall: checkMethodCall,
         checkPropertySet: checkPropertySet,
+        checkDOMMutation: checkDOMMutation,
         checkAttribute: checkAttribute,
         checkNode: checkNode,
         checkEvent: checkEvent,
