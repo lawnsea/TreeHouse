@@ -291,7 +291,8 @@ function (validate, serialization) {
                     validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode);
 
@@ -305,7 +306,8 @@ function (validate, serialization) {
                     validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode);
 
@@ -317,7 +319,8 @@ function (validate, serialization) {
                     expect(validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([['truetag']])
+                                concat([['truetag']]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode)).toBe(true);
                 });
@@ -326,7 +329,8 @@ function (validate, serialization) {
                     expect(validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([['falsetag']])
+                                concat([['falsetag']]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode)).toBe(false);
                 });
@@ -338,7 +342,8 @@ function (validate, serialization) {
                     validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode);
 
@@ -355,7 +360,8 @@ function (validate, serialization) {
                     validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode);
 
@@ -390,7 +396,8 @@ function (validate, serialization) {
                     expect(validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode)).toBe(true);
                 });
@@ -401,7 +408,8 @@ function (validate, serialization) {
                     expect(validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode)).toBe(false);
                 });
@@ -414,7 +422,8 @@ function (validate, serialization) {
                     validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode);
 
@@ -430,7 +439,8 @@ function (validate, serialization) {
                     expect(validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode)).toBe(true);
                 });
@@ -441,7 +451,8 @@ function (validate, serialization) {
                     expect(validate.checkDOMMutation(policy,
                         makeMutationEvent(MutationEvent.ADDITION, {
                             target: serialization.getNodeTraversal(parent, rootNode).
-                                concat([target])
+                                concat([target]),
+                            relatedNode: serialization.getNodeTraversal(parent, rootNode)
                         }),
                         rootNode)).toBe(false);
                 });
