@@ -3,6 +3,19 @@ self.basePolicy = (function () {
     var URL_PATTERN = new RegExp('^url\\(');
 
     return {
+        '!api': {
+            '*': true
+        },
+        '!elements': {
+            '!attributes': {
+                '*': true
+            },
+            '!tags': {
+                '*': true
+            }
+        }
+    };
+    /*
         dom: {
             attributes: {
                 abbr: true,
@@ -37,7 +50,7 @@ self.basePolicy = (function () {
                 compact: true,
                 content: false, // XXX: CDATA; applies to meta
                 coords: true,
-                /* XXX: should we allow data-*? */
+                // XXX: should we allow data-*?
                 data: false, // XXX: URI; applies to object
                 datetime: true,
                 declare: false, // XXX: applies to object
@@ -350,4 +363,5 @@ self.basePolicy = (function () {
             }
         }
     };
+    */
 }());

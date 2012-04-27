@@ -128,7 +128,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
         var target = event.target[event.target.length - 1];
         if (event.attrChange === MutationEvent.prototype.ADDITION) {
             return checkNode(policy,
-                            serialization.traverseToNode(event.target.slice(0, -1), rootNode),
+                            serialization.traverseToNode(event.relatedNode, rootNode),
                             target);
         } else if (event.attrChange === MutationEvent.prototype.MODIFICATION) {
             return checkAttribute(policy, target, event.newValue, event.attrName);

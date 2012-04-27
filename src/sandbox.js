@@ -9,13 +9,13 @@ function(serialization, SortedSet, validate, basePolicy) {
         dispatchEvent: function(e) {
             var ev = document.createEvent('CustomEvent');
             var serializedTarget = e.target;
-            var rootNode;
+            var rootNode = this._children.get(serializedTarget.shift());
 
             if (e.type !== 'DOMSubtreeModified') {
                 return;
             }
 
-            if (!validate.checkEvent(basePolicy, e)) {
+            if (!validate.checkDOMMutation(basePolicy, e, rootNode)) {
                 this.onPolicyViolation();
             }
 
@@ -24,7 +24,7 @@ function(serialization, SortedSet, validate, basePolicy) {
                 e.target = serialization.deserializeNode(serializedTarget.pop());
                 e.__serializedTarget = serializedTarget.slice(0);
                 e.target.__treehouseNextSibling = serialization.traverseToNode(
-                    serializedTarget, this._children.get(serializedTarget.shift()));
+                    serializedTarget, rootNode);
             }
 
             e = serialization.deserializeEvent(e, this._children.get());

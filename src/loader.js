@@ -85,12 +85,12 @@ var initBroker;
         var args = argumentsToArray(arguments, 2);
 
         // check policy
-        if (validate && !validate.checkFunction(policy, name, args)) {
+        if (validate && !validate.checkMethodCall(policy, name, args)) {
             terminate('Use of', name, 'violates policy');
         }
 
         // check base policy
-        if (validate && !validate.checkFunction(basePolicy, name, args)) {
+        if (validate && !validate.checkMethodCall(basePolicy, name, args)) {
             terminate('Use of', name, 'violates base policy');
         }
 
@@ -152,7 +152,7 @@ var initBroker;
             'textinput': true, 'unload': true, 'wheel': true
         };
         var hookedStyles = {};
-        var k, i;
+        var k, m, i;
         var addEventListenerImpl;
 
         importScriptsImpl('../lib/jsdom/ie10-compatibility.js');
@@ -200,13 +200,17 @@ var initBroker;
         }
 
         // Export style properties in the base policy
-        for (k in basePolicy.dom.attributes.style) {
-            hookStyleProperty(k);
+        for (k in basePolicy['!elements']['!attributes']) {
+            for (m in basePolicy['!elements']['!attributes'][k].style) {
+                hookStyleProperty(k);
+            }
         }
 
         // Export any style properties that don't appear in the base policy
-        for (k in policy.dom.attributes.style) {
-            hookStyleProperty(k);
+        for (k in policy['!elements']['!attributes']) {
+            for (m in policy['!elements']['!attributes'][k].style) {
+                hookStyleProperty(k);
+            }
         }
 
         // XXX: setPolicy needs to do this too
@@ -270,7 +274,7 @@ var initBroker;
 
         // Listen for changes to the VDOM and dispatch them to the monitor
         addEventListenerImpl.call(document.body, 'DOMSubtreeModified', function (e) {
-            var target;
+            var target, related, targetTraversal;
 
             if (changingDOM) {
                 // the broker modified the VDOM, so ignore this event
@@ -285,13 +289,16 @@ var initBroker;
                 // When adding a node to the DOM, serialize the node and append
                 // it to the traversal
                 target = serialization.serializeNode(e.target);
+                // get the traversal from the root node to the parent
+                related = serialization.getNodeTraversal(e.relatedNode, document.body).slice(1);
                 e = serialization.serializeEvent(e, document.body);
                 e.target.push(target);
+                e.relatedNode = e.relatedNode.concat(related);
             } else {
                 e = serialization.serializeEvent(e, document.body);
             }
 
-            if (!validate.checkEvent(policy, e)) {
+            if (!validate.checkDOMMutation(policy, e, document.body)) {
                 terminate('VDOM modification violates policy', e);
             }
             // XXX: Revisit. Are you sure don't need to check the base policy here?
