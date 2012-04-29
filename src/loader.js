@@ -19,6 +19,34 @@ var initBroker;
         'undefined', 'unescape', 'webkitURL',
         'win', 'window', 'doc', 'document', 'initBroker'
     ];
+    var styleAttributeList = [
+        'azimuth', 'backgroundAttachment', 'backgroundColor', 'backgroundImage',
+        'backgroundPosition', 'backgroundRepeat', 'background',
+        'borderCollapse', 'borderColor', 'borderSpacing', 'borderStyle',
+        'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+        'borderTopColor', 'borderRightColor', 'borderBottomColor',
+        'borderLeftColor', 'borderTopStyle', 'borderRightStyle',
+        'borderBottomStyle', 'borderLeftStyle', 'borderTopWidth',
+        'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
+        'borderWidth', 'border', 'bottom', 'captionSide', 'clear', 'clip',
+        'color', 'content', 'counterIncrement', 'counterReset', 'cueAfter',
+        'cueBefore', 'cue', 'cursor', 'direction', 'display', 'elevation',
+        'emptyCells', 'float', 'fontFamily', 'fontSize', 'fontStyle',
+        'fontVariant', 'fontWeight', 'font', 'height', 'left', 'letterSpacing',
+        'lineHeight', 'listStyleImage', 'listStylePostion', 'listStyleType',
+        'listStyle', 'margin', 'marginTop', 'marginRight', 'marginBottom',
+        'marginLeft', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth',
+        'orphans', 'outlineColor', 'outlineStyle', 'outlineWidth', 'outline',
+        'overflow', 'padding', 'paddingTop', 'paddingRight', 'paddingBottom',
+        'paddingLeft', 'pageBreakAfter', 'pageBreakBefore', 'pageBreakInside',
+        'pauseAfter', 'pauseBefore', 'pause', 'pitchRange', 'pitch',
+        'playDuring', 'position', 'quotes', 'richness', 'right', 'speakHeader',
+        'speakNumeral', 'speakPunctuation', 'speak', 'speechRate', 'stress',
+        'tableLayout', 'textAlign', 'textDecoration', 'textIndent',
+        'textTransform', 'top', 'unicodeBidi', 'verticalAlign', 'visibility',
+        'voiceFamily', 'volume', 'whiteSpace', 'widows', 'width', 'wordSpacing',
+        'zIndex'
+    ];
     var blacklist = ['Worker'];
     var nop = function (){};
     var ignored = {};
@@ -180,15 +208,8 @@ var initBroker;
          * an attribute on the element
          */
         function hookStyleProperty(property) {
-            // propertyName -> data-treehouse-style-property-name
             var name = STYLE_ATTRIBUTE_PREFIX + util.camelCaseToDashed(property);
 
-            if (hookedStyles[property]) {
-                // already hooked
-                return;
-            }
-
-            hookedStyles[property] = true;
             Object.defineProperty(CSSStyleDeclaration.prototype, property, {
                 set: function (newValue) {
                     this._element.setAttribute(name, newValue);
@@ -198,22 +219,7 @@ var initBroker;
                 }
             });
         }
-
-        // Export style properties in the base policy
-        for (k in basePolicy['!elements']['!attributes']) {
-            for (m in basePolicy['!elements']['!attributes'][k].style) {
-                hookStyleProperty(k);
-            }
-        }
-
-        // Export any style properties that don't appear in the base policy
-        for (k in policy['!elements']['!attributes']) {
-            for (m in policy['!elements']['!attributes'][k].style) {
-                hookStyleProperty(k);
-            }
-        }
-
-        // XXX: setPolicy needs to do this too
+        _.each(styleAttributeList, hookStyleProperty);
 
         // Wrap addEventListener so that we can ask the monitor to install
         // listeners in the actual DOM
@@ -285,18 +291,14 @@ var initBroker;
             // TODO: if the new node has onfoo handers, register them and delete the attributes
             //       from the serialized node
 
-            if (e.attrChange === MutationEvent.prototype.ADDITION) {
-                // When adding a node to the DOM, serialize the node and append
-                // it to the traversal
-                target = serialization.serializeNode(e.target);
-                // get the traversal from the root node to the parent
-                related = serialization.getNodeTraversal(e.relatedNode, document.body).slice(1);
-                e = serialization.serializeEvent(e, document.body);
-                e.target.push(target);
-                e.relatedNode = e.relatedNode.concat(related);
-            } else {
-                e = serialization.serializeEvent(e, document.body);
-            }
+            // get the traversal from the root node to the parent
+            related = serialization.getNodeTraversal(e.relatedNode, document.body).slice(1);
+            // get the serialized representation of the target node
+            target = serialization.serializeNode(e.target);
+            e = serialization.serializeEvent(e, document.body);
+            // append the serialized node to its traversal
+            e.target.push(target);
+            e.relatedNode = related;
 
             if (!validate.checkDOMMutation(policy, e, document.body)) {
                 terminate('VDOM modification violates policy', e);

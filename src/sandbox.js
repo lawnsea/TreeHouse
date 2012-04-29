@@ -10,6 +10,7 @@ function(serialization, SortedSet, validate, basePolicy) {
             var ev = document.createEvent('CustomEvent');
             var serializedTarget = e.target;
             var rootNode = this._children.get(serializedTarget.shift());
+            var serializedTargetNode;
 
             if (e.type !== 'DOMSubtreeModified') {
                 return;
@@ -19,16 +20,16 @@ function(serialization, SortedSet, validate, basePolicy) {
                 this.onPolicyViolation();
             }
 
+            serializedTargetNode = e.target.pop();
+
             if (e.attrChange === MutationEvent.ADDITION) {
                 // the last element of the target is the new node to add
-                e.target = serialization.deserializeNode(serializedTarget.pop());
-                e.__serializedTarget = serializedTarget.slice(0);
+                e.target = serialization.deserializeNode(serializedTargetNode);
                 e.target.__treehouseNextSibling = serialization.traverseToNode(
                     serializedTarget, rootNode);
             }
 
-            e = serialization.deserializeEvent(e, this._children.get());
-            e.__serializedTarget = serializedTarget;
+            e = serialization.deserializeEvent(e, rootNode);
             this.debug('Deserialized received event', e);
             ev.initCustomEvent('sandboxDOMEvent', true, true, e);
             ev.detail.sandbox = this;
