@@ -103,6 +103,25 @@ var initBroker;
     policy = self.policy;
     delete self.policy;
 
+    // Adapted from Andrew Dupont's implementation
+    // http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+    function deepExtend(destination, source) {
+        for (var property in source) {
+            if (typeof source[property] === "object" &&
+                source[property] !== null ) {
+                destination[property] = destination[property] || {};
+                deepExtend(destination[property], source[property]);
+            } else {
+                destination[property] = source[property];
+            }
+        }
+        return destination;
+    }
+
+    function setPolicy(newPolicy) {
+        deepExtend(policy, newPolicy);
+    }
+
     function freezeProperty(k, v) {
         Object.defineProperty(self, k, {
             value: v,
@@ -274,6 +293,21 @@ var initBroker;
                 }
                 e = serialization.deserializeEvent(e, doc.body);
                 e.target.dispatchEvent(e);
+            }
+        };
+
+        // Handle setPolicy messages
+        messageHandlers.setPolicy = function (policy) {
+            var savedSetPolicy;
+
+            if (typeof policy === 'string') {
+                savedSetPolicy = self.setPolicy;
+                self.setPolicy = setPolicy;
+                importScriptsImpl(policy);
+                delete self.setPolicy;
+                self.setPolicy = savedSetPolicy;
+            } else {
+                setPolicy(policy);
             }
         };
 

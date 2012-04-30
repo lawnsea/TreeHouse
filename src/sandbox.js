@@ -219,5 +219,11 @@ function(serialization, SortedSet, validate, basePolicy) {
         }, this);
     };
 
+    Sandbox.prototype.setPolicy = function (policy) {
+        if (!this._terminated) {
+            this.jsonrpcNotify('setPolicy', policy);
+        }
+    };
+
     return Sandbox;
 });

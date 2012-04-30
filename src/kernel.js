@@ -72,12 +72,32 @@ function(Sandbox, util) {
     function initialize() {
         // TODO: handle scripts in HEAD; probably need to just prefix
         //       traversals with 'body' or 'head'
-        var scripts = Array.prototype.slice.apply(
-                document.body.querySelectorAll('script[type="text/x-treehouse-javascript"]'));
+        var guestScripts = Array.prototype.slice.apply(
+            document.body.querySelectorAll(
+                'script[type="text/x-treehouse-javascript"]:not([data-treehouse-policy])'));
+        var policyScripts = Array.prototype.slice.apply(
+            document.body.querySelectorAll(
+                'script[type="text/x-treehouse-javascript"][data-treehouse-policy]'));
         var children = [];
+        var toRemove = [];
         var i, j, k, len, worker, selector, script;
 
-        scripts.forEach(function (script, scriptIndex, scripts) {
+        policyScripts.forEach(function (script, scriptIndex, guestScripts) {
+            var name = script.getAttribute('data-treehouse-sandbox-name') || 
+                'sandbox' + sandboxIndex;
+            var sandbox;
+
+            if (sandboxes[name] === void undefined) {
+                sandboxes[name] = new Sandbox(name, null);
+                sandboxes[name].index = sandboxIndex;
+                sandboxIndex++;
+            }
+
+            sandbox = sandboxes[name];
+            sandbox.setPolicy(script.src);
+        });
+
+        guestScripts.forEach(function (script, scriptIndex, guestScripts) {
             var name = script.getAttribute('data-treehouse-sandbox-name') || 
                 'sandbox' + sandboxIndex;
             var sandbox;
