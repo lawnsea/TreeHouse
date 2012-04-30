@@ -1,8 +1,7 @@
 define([
-    'treehouse/sandbox', 'treehouse/util', 'treehouse/kernel/allowed-attributes',
-    'treehouse/kernel/allowed-elements', 'treehouse/kernel/allowed-style-properties'
+    'treehouse/sandbox', 'treehouse/util'
 ], 
-function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperties) {
+function(Sandbox, util) {
     var sandboxes = {};
     var sandboxIndex = 0;
     var messageHandlers = {};
@@ -20,9 +19,7 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
                 attr = attrs[i];
                 if (attr.name.indexOf(STYLE_ATTRIBUTE_PREFIX) === 0) {
                     name = util.dashedToCamelCase(attr.name.slice(STYLE_ATTRIBUTE_PREFIX.length));
-                    if (allowedStyleProperties[name] === true) {
-                        el.style[name] = attr.value;
-                    }
+                    el.style[name] = attr.value;
                     toRemove.push(attr.name);
                 }
             }
@@ -49,24 +46,15 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
         }
 
         if (ev.attrChange === MutationEvent.prototype.MODIFICATION) {
-            if (ev.target.setAttribute && allowedAttributes[ev.attrName.toLowerCase()] === true) {
-                ev.target.setAttribute(ev.attrName, ev.newValue);
-            } else if (ev.attrName.indexOf(STYLE_ATTRIBUTE_PREFIX) === 0) {
+            if (ev.attrName.indexOf(STYLE_ATTRIBUTE_PREFIX) === 0) {
                 name = ev.attrName.slice(STYLE_ATTRIBUTE_PREFIX.length);
-                if (allowedStyleProperties[name] === true) {
-                    ev.target.style[name] = ev.newValue;
-                }
+                ev.target.style[name] = ev.newValue;
+            } else if (ev.target.setAttribute) {
+                ev.target.setAttribute(ev.attrName, ev.newValue);
             }
         } else if (ev.attrChange === MutationEvent.prototype.ADDITION) {
-            if (ev.target instanceof Text ||
-                allowedElements[ev.target.tagName.toLowerCase()] === true)
-            {
-                el = ev.target;
-                setStyleAttributes(el);
-            } else {
-                el = document.createElement('div');
-                el.style.display = 'none';
-            }
+            el = ev.target;
+            setStyleAttributes(el);
 
             if (el.__treehouseNextSibling) {
                 ev.relatedNode.insertBefore(el, el.__treehouseNextSibling);
@@ -95,7 +83,7 @@ function(Sandbox, util, allowedAttributes, allowedElements, allowedStyleProperti
             var sandbox;
 
             if (sandboxes[name] === void undefined) {
-                sandboxes[name] = new Sandbox(name, null, allowedAttributes);
+                sandboxes[name] = new Sandbox(name, null);
                 sandboxes[name].index = sandboxIndex;
                 sandboxIndex++;
             }

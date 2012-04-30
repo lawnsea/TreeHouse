@@ -90,14 +90,13 @@ function(serialization, SortedSet, validate, basePolicy) {
         }
     }
 
-    Sandbox = function (name, loader, attributeWhitelist) {
+    Sandbox = function (name, loader) {
         loader = loader || '../src/loader.js';
         this.name = name;
         this._worker = new Worker(loader);
         this._children = new SortedSet(compareNodes);
         this._started = false;
         this._listeners = [];
-        this._whitelist = attributeWhitelist;
 
         consoleMethods.forEach(function (method) {
             this[method] = function () {
