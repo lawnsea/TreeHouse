@@ -2,6 +2,7 @@ var doc, document, win, window;
 var initBroker;
 
 (function () {
+    var terminated = false;
     var _self = {};
     var whitelist = [
         'Array', 'ArrayBuffer', 'Boolean', 'DataView', 'Date', 'Error',
@@ -82,6 +83,8 @@ var initBroker;
     }
 
     function terminate() {
+        terminated = true;
+
         if (console && console.error) {
             console.error.apply(console, ['Terminating:'].concat(argumentsToArray(arguments)));
         }
@@ -111,6 +114,11 @@ var initBroker;
 
     function wrapFunction(fn, name) {
         var args = argumentsToArray(arguments, 2);
+
+        if (terminated) {
+            // the broker has been terminated, so ignore all events
+            return;
+        }
 
         // check policy
         if (validate && !validate.checkMethodCall(policy, name, args)) {
@@ -285,6 +293,9 @@ var initBroker;
             if (changingDOM) {
                 // the broker modified the VDOM, so ignore this event
                 return;
+            } else if (terminated) {
+                // the broker has been terminated, so ignore all events
+                return;
             }
 
             // TODO: if the new node is a SCRIPT, check the policy and import it if allowed
@@ -302,6 +313,7 @@ var initBroker;
 
             if (!validate.checkDOMMutation(policy, e, document.body)) {
                 terminate('VDOM modification violates policy', e);
+                return;
             }
             // XXX: Revisit. Are you sure don't need to check the base policy here?
 

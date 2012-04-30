@@ -18,6 +18,7 @@ function(serialization, SortedSet, validate, basePolicy) {
 
             if (!validate.checkDOMMutation(basePolicy, e, rootNode)) {
                 this.onPolicyViolation();
+                return;
             }
 
             serializedTargetNode = e.target.pop();
@@ -82,11 +83,9 @@ function(serialization, SortedSet, validate, basePolicy) {
     }
 
     function onMessage(e) {
-        if (e.data.method in messageHandlers) {
+        if (e.data.method in messageHandlers && !this._terminated) {
             this.debug('Received message', e.data);
             messageHandlers[e.data.method].apply(this, e.data.params);
-        } else {
-            //this.warn('Unknown message type "' + e.data.type + '"', e.data);
         }
     }
 
@@ -96,6 +95,7 @@ function(serialization, SortedSet, validate, basePolicy) {
         this._worker = new Worker(loader);
         this._children = new SortedSet(compareNodes);
         this._started = false;
+        this._terminated = false;
         this._listeners = [];
 
         consoleMethods.forEach(function (method) {
@@ -132,8 +132,10 @@ function(serialization, SortedSet, validate, basePolicy) {
      * See https://developer.mozilla.org/En/DOM/Worker#postMessage()
      */
     Sandbox.prototype.postMessage = function (data) {
-        this.debug('Sending message', data);
-        this._worker.postMessage(data);
+        if (!this._terminated) {
+            this.debug('Sending message', data);
+            this._worker.postMessage(data);
+        }
     };
 
     /**
@@ -143,6 +145,7 @@ function(serialization, SortedSet, validate, basePolicy) {
      */
     Sandbox.prototype.terminate = function () {
         this._worker.terminate();
+        this._terminated = true;
     };
 
     Sandbox.prototype.jsonrpcCall = function (method) {
@@ -165,7 +168,7 @@ function(serialization, SortedSet, validate, basePolicy) {
         var prefix = !rootNode ? [] : [ this._children.getIndex(rootNode) ];
         var ev;
 
-        if (this._started) {
+        if (this._started && !this._terminated) {
             ev = serialization.serializeEvent(e, rootNode, prefix);
 
             this.jsonrpcNotify('dispatchEvent', ev);
@@ -199,12 +202,6 @@ function(serialization, SortedSet, validate, basePolicy) {
             // TODO: construct and dispatch a mutation event
             throw 'Adding children to a running sandbox is not implemented';
         }
-
-        /*
-        for (i = 0; i < DISPATCHED_EVENTS.length; i++) {
-            child.addEventListener(DISPATCHED_EVENTS[i], dispatchEvent.bind(this));
-        }
-        */
     };
 
     Sandbox.prototype.removeChild = function (child) {
