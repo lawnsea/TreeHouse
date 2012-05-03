@@ -69,7 +69,8 @@ function(Sandbox, util) {
         }
     };
 
-    function initialize() {
+    function initialize(config) {
+        config = config || {};
         // TODO: handle scripts in HEAD; probably need to just prefix
         //       traversals with 'body' or 'head'
         var guestScripts = Array.prototype.slice.apply(
@@ -88,12 +89,12 @@ function(Sandbox, util) {
             var sandbox;
 
             if (sandboxes[name] === void undefined) {
-                sandboxes[name] = new Sandbox(name, null);
+                sandboxes[name] = new Sandbox(name, config.loaderUrl || null);
                 sandboxes[name].index = sandboxIndex;
                 sandboxIndex++;
             }
-
             sandbox = sandboxes[name];
+
             sandbox.setPolicy(script.src);
         });
 
@@ -103,11 +104,10 @@ function(Sandbox, util) {
             var sandbox;
 
             if (sandboxes[name] === void undefined) {
-                sandboxes[name] = new Sandbox(name, null);
+                sandboxes[name] = new Sandbox(name, config.loaderUrl || null);
                 sandboxes[name].index = sandboxIndex;
                 sandboxIndex++;
             }
-
             sandbox = sandboxes[name];
             
             // add children to sandbox
@@ -129,8 +129,11 @@ function(Sandbox, util) {
                 sandbox.body = document.querySelector(sandbox.bodyNodeSelector);
             }
             */
-            sandbox.start();
         });
+
+        for (var k in sandboxes) {
+            sandboxes[k].start();
+        }
 
         document.body.addEventListener('sandboxDOMEvent', function (e) {
             handleSandboxDOMEvent(e.detail.sandbox, e);

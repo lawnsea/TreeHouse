@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <title>Runner for JS-only tests</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="../demos/dromaeo/tests/workerrunner.js"
+    type="text/x-treehouse-javascript"
+    data-treehouse-sandbox-name="worker1"
+    data-treehouse-sandbox-children="#root"
+  ></script>
+  <script>
+  document.write('<script src="../demos/dromaeo/tests/' + 
+    document.location.search.slice(1) + '.js"' +
+    ' type="text/x-treehouse-javascript"' + 
+    ' data-treehouse-sandbox-name="worker1"' +
+  '><\/script>');
+  </script>
+  <script src="workerpolicy.js"
+    type="text/x-treehouse-javascript"
+    data-treehouse-sandbox-name="worker1"
+    data-treehouse-policy
+  ></script>
+  <script src="../../../lib/jsdom/ie10-compatibility.js"></script>
+  <script src="../../../lib/require.js"></script>
+  <script>
+  // web worker compat
+  window.doc = document;
+  window.win = window;
+
+  require({
+        baseUrl: '../../../src',
+        packages: [{
+              name: 'jsdom',
+              location: '../lib/jsdom',
+              main: 'jsdom'
+          }, {
+              name: 'node-htmlparser',
+              location: '../lib/jsdom/node-htmlparser'
+          }, {
+            name: 'underscore',
+            location: '../lib/underscore',
+            main: 'underscore'
+        }, {
+            name: 'treehouse',
+            location: './'
+        }]
+    }, [ 'kernel' ], function (kernel) {
+      var started = false;
+      var callback, name;
+
+      kernel.initialize({
+        loaderUrl: '../../../src/loader.js'
+      });
+      var worker = kernel.sandboxes.worker1._worker;
+
+      worker.addEventListener('message', function(event) {
+        if (event.data && !event.data.method) {
+          if (!started) {
+            name = event.data;
+            window.top.registerTest(function (cb) {
+              callback = cb;
+              started = true;
+              worker.postMessage('startEm');
+            });
+          } else {
+            callback(name, event.data);
+          }
+        }
+      }, false);
+  });
+  </script>
+</body>
+</html>

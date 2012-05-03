@@ -331,12 +331,20 @@
 					totalTests++;
 					
 					// Check if we're loading an HTML file
-					if ( test.file.match(/html$/) ) {
+					if ( test.file.match(/html(?:\\?.+)?$/) ) {
 						var iframe = document.createElement("iframe");
 						iframe.style.height = "1px";
 						iframe.style.width = "1px";
 						iframe.src = "tests/" + test.file;
 						document.body.appendChild( iframe );
+                        queues[name].push((function () {
+                            return function () {
+                                var cbFn = function (data) {
+                                    console.warn('Results of', name, data);
+                                };
+                                iframe.runTest(cbFn);
+                            };
+                        }()));
 					
 					// Otherwise we're loading a pure-JS test
 					} else {
@@ -346,6 +354,30 @@
 			}
 		});
 	});
+
+    var callbacks = [];
+    window.registerTest = function (callback) {
+        var i = 0;
+
+        function nextTest() {
+            if (i < callbacks.length) {
+                callbacks[i](function (name, data) {
+                    console.warn('Results of', name, data);
+                    i++;
+                    nextTest();
+                });
+            }
+        }
+
+        numloaded++;
+        callbacks.push(callback);
+
+		if (numloaded === totalTests) {
+            // run the tests we've loaded
+            interval = true;
+            nextTest();
+        }
+    }
 
 	// Remove the next test from the queue and execute it
 	function dequeue(){

@@ -1,6 +1,6 @@
 {
 "dromaeo-3d-cube": {
-	file: "dromaeo-3d-cube.html",
+	file: "jsonlyrunner.html?dromaeo-3d-cube",
 	name: "Rotating 3D Cube",
 	origin: ["Simon Speich", "http://www.speich.net/computer/moztesting/3d.htm"],
 	desc: "Rotating the individual pixels of a cube. No rendering done.",
@@ -8,7 +8,7 @@
 	tags: ["object", "array", "property", "math"]
 },
 "dromaeo-string-base64": {
-	file: "dromaeo-string-base64.html",
+	file: "jsonlyrunner.html?dromaeo-string-base64",
 	name: "Base 64 Encoding and Decoding",
 	origin: ["Mozilla", "http://mozilla.org/"],
 	desc: "Encode and decode a random string to base 64.",
@@ -16,7 +16,7 @@
 	tags: ["string","array","looping","bitops"]
 },
 "dromaeo-core-eval": {
-	file: "dromaeo-core-eval.html",
+	file: "jsonlyrunner.html?dromaeo-core-eval",
 	name: "Code Evaluation",
 	origin: ["John Resig", "http://ejohn.org/"],
 	desc: "Microtests of code evaluation (eval, new Function).",
@@ -24,7 +24,7 @@
 	tags: ["eval","microtest"]
 },
 "dromaeo-object-array": {
-	file: "dromaeo-object-array.html",
+	file: "jsonlyrunner.html?dromaeo-object-array",
 	name: "Arrays",
 	origin: ["John Resig", "http://ejohn.org/"],
 	desc: "Microtests of arrays (construction, methods, access).",
@@ -32,7 +32,7 @@
 	tags: ["array","microtest"]
 },
 "dromaeo-object-regexp": {
-	file: "dromaeo-object-regexp.html",
+	file: "jsonlyrunner.html?dromaeo-object-regexp",
 	name: "Regular Expressions",
 	origin: ["John Resig", "http://ejohn.org/"],
 	desc: "Microtests of regular expressions (construction, matching, replace).",
@@ -40,7 +40,7 @@
 	tags: ["regexp","microtest"]
 },
 "dromaeo-object-string": {
-	file: "dromaeo-object-string.html",
+	file: "jsonlyrunner.html?dromaeo-object-string",
 	name: "Strings",
 	origin: ["John Resig", "http://ejohn.org/"],
 	desc: "Microtests of strings (concatenation, methods).",
@@ -48,7 +48,7 @@
 	tags: ["string","microtest"]
 },
 "v8-crypto": {
-	file: "v8-crypto.html",
+	file: "jsonlyrunner.html?v8-crypto",
 	name: "RSA Encryption/Decryption",
 	origin: ["V8 Benchmark", "http://code.google.com/apis/v8/benchmarks.html"],
 	desc: "Encrypt a string and then decrypt it again using RSA.",
@@ -56,7 +56,7 @@
 	tags: ["looping","string","bitops"]
 },
 "v8-deltablue": {
-	file: "v8-deltablue.html",
+	file: "jsonlyrunner.html?v8-deltablue",
 	name: "DeltaBlue Constraint Solving",
 	origin: ["V8 Benchmark", "http://code.google.com/apis/v8/benchmarks.html"],
 	desc: "Computing a number of limitations on a set of values.",
@@ -64,7 +64,7 @@
 	tags: ["looping","functions"]
 },
 "v8-earley-boyer": {
-	file: "v8-earley-boyer.html",
+	file: "jsonlyrunner.html?v8-earley-boyer",
 	name: "String Parsing and Searching",
 	origin: ["V8 Benchmark", "http://code.google.com/apis/v8/benchmarks.html"],
 	desc: "Tests for parsing languages and searching strings.",
@@ -80,7 +80,7 @@
 	tags: ["looping","functions","object"]
 },
 "v8-richards": {
-	file: "v8-richards.html",
+	file: "jsonlyrunner.html?v8-richards",
 	name: "Richards Benchmarks",
 	origin: ["V8 Benchmark", "http://code.google.com/apis/v8/benchmarks.html"],
 	desc: "A series of benchmarks to test the quality of system implementation languages.",
@@ -88,7 +88,7 @@
 	tags: ["functions","object"]
 },
 "sunspider-3d-morph": {
-	file: "sunspider-3d-morph.html",
+	file: "jsonlyrunner.html?sunspider-3d-morph",
 	name: "3D Mesh Transformation",
 	origin: ["WebKit", "http://webkit.org/misc/morph.html"],
 	desc: "Transforming the points of a matrix. No visual output.",
@@ -96,7 +96,7 @@
 	tags: ["array", "looping", "math"]
 },
 "sunspider-3d-raytrace": {
-	file: "sunspider-3d-raytrace.html",
+	file: "jsonlyrunner.html?sunspider-3d-raytrace",
 	name: "3D Raytrace",
 	origin: ["Apple", "http://apple.com/"],
 	desc: "Rendering a scene using raytracing techniques. No visual output.",
@@ -104,7 +104,7 @@
 	tags: ["array", "functions", "math"]
 },
 "sunspider-access-binary-trees": {
-	file: "sunspider-access-binary-trees.html",
+	file: "jsonlyrunner.html?sunspider-access-binary-trees",
 	name: "Traversing Binary Trees",
 	origin: ["Language Shootout", "http://shootout.alioth.debian.org/"],
 	desc: "Moving through an object representation of a binary tree.",
@@ -112,7 +112,7 @@
 	tags: ["object", "recursion"]
 },
 "sunspider-access-fannkuch": {
-	file: "sunspider-access-fannkuch.html",
+	file: "jsonlyrunner.html?sunspider-access-fannkuch",
 	name: "Fannkuch",
 	origin: ["Language Shootout", "http://shootout.alioth.debian.org/"],
 	desc: "Figure out the number of ways in which a set of numbers can be manipulated.",
@@ -120,7 +120,7 @@
 	tags: ["array", "looping"]
 },
 "sunspider-access-nbody": {
-	file: "sunspider-access-nbody.html",
+	file: "jsonlyrunner.html?sunspider-access-nbody",
 	name: "N-Body Rotation and Gravity",
 	origin: ["Language Shootout", "http://shootout.alioth.debian.org/"],
 	desc: "Compute the location of multiple planets based upon rotation and gravity.",
