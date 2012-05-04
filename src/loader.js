@@ -336,8 +336,7 @@ var initBroker;
             // TODO: if the new node has onfoo handers, register them and delete the attributes
             //       from the serialized node
 
-            // get the traversal from the root node to the parent
-            related = serialization.getNodeTraversal(e.relatedNode, document.body).slice(1);
+            related = serialization.getNodeTraversal(e.relatedNode, document.body);
             // get the serialized representation of the target node
             target = serialization.serializeNode(e.target);
             e = serialization.serializeEvent(e, document.body);
@@ -349,6 +348,9 @@ var initBroker;
                 terminate('VDOM modification violates policy', e);
                 return;
             }
+            // the sandbox wants the traversal from the root child, not the body
+            e.relatedNode = related.slice(1);
+
             // XXX: Revisit. Are you sure don't need to check the base policy here?
 
             e.__treehouseEventTime = new Date();
