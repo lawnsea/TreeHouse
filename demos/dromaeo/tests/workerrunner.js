@@ -7,7 +7,7 @@
 	var tDistribution = 2.776;
 	
 	// The number of individual test iterations to do
-	var numTests = 5;
+	var numTests = 10;
 	
 	// The type of run that we're doing (options are "runs/s" or "ms")
 	var runStyle = "runs/s";

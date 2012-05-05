@@ -5,7 +5,7 @@
 	var tDistribution = 2.776;
 	
 	// The number of individual test iterations to do
-	var numTests = 5;
+	var numTests = 10;
 	
 	// The type of run that we're doing (options are "runs/s" or "ms")
 	var runStyle = "runs/s";
@@ -350,17 +350,22 @@
     var callbacks = [];
     window.registerTest = function (callback) {
         var i = 0;
+        var results = {};
 
         function nextTest() {
             if (i < callbacks.length) {
                 callbacks[i](function (name, data) {
-                    var el = document.createElement('textarea');
-                    el.value = 'Results of ' + name + '\n' + JSON.stringify(data);
-                    //console.warn('Results of', name, data);
-                    document.body.appendChild(el);
+                    var progressEl = document.querySelector('#progress');
+                    progressEl.innerHTML += '<p>Completed ' + name + '</p>';
+                    results[name] = data;
                     i++;
                     nextTest();
                 });
+            } else {
+                var resultsEl = document.querySelector('#results');
+                var progressEl = document.querySelector('#progress');
+                progressEl.innerHTML += '<p>Finished!</p>';
+                resultsEl.value = JSON.stringify(results);
             }
         }
 

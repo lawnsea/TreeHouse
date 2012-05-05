@@ -258,7 +258,7 @@
 	tags: ["string","object","looping"]
 },
 "sunspider-string-tagcloud": {
-	file: "sunspider-string-tagcloud.html",
+	file: "jsonlyrunner.html?sunspider-string-tagcloud",
 	name: "Tag Cloud Creation",
 	origin: ["SunSpider", "http://www2.webkit.org/perf/sunspider-0.9/sunspider.html"],
 	desc: "Convert a JSON structure into an HTML tag cloud.",
