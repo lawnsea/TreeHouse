@@ -337,14 +337,6 @@
 						iframe.style.width = "1px";
 						iframe.src = "tests/" + test.file;
 						document.body.appendChild( iframe );
-                        queues[name].push((function () {
-                            return function () {
-                                var cbFn = function (data) {
-                                    console.warn('Results of', name, data);
-                                };
-                                iframe.runTest(cbFn);
-                            };
-                        }()));
 					
 					// Otherwise we're loading a pure-JS test
 					} else {
@@ -362,7 +354,10 @@
         function nextTest() {
             if (i < callbacks.length) {
                 callbacks[i](function (name, data) {
-                    console.warn('Results of', name, data);
+                    var el = document.createElement('textarea');
+                    el.value = 'Results of ' + name + '\n' + JSON.stringify(data);
+                    //console.warn('Results of', name, data);
+                    document.body.appendChild(el);
                     i++;
                     nextTest();
                 });

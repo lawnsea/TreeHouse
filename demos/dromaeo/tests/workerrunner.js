@@ -106,7 +106,8 @@
 					}
 				} catch( e ) {
 					console.error("FAIL " + name + " " + num + e);
-					return;
+                    // let's run all the tests
+					//return;
 				}
 
 				if ( ++pos < numTests ) {
