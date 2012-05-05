@@ -107,6 +107,9 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
             result = rule.call(null, name, value);
         }
 
+        if (!result) {
+            console.error('Failed property or attribute rule', name, value);
+        }
         return result;
     }
 
@@ -156,6 +159,10 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
 
         var rule = findRule(policy, path);
 
+        if (isObject(rule) && !(rule instanceof RegExp)) {
+            rule = rule['!set'];
+        }
+
         return evaluateAttributeRule(rule, name, value);
     }
 
@@ -183,6 +190,7 @@ define(['treehouse/serialization', 'treehouse/util'], function (serialization, u
         // check tag
         var rule = findRule(policy, ['!elements', '!tags', node.tag]);
         if (!evaluateTagRule(rule, parent, node)) {
+            console.error('Failed tag rule', node.tagName);
             return false;
         }
         

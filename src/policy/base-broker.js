@@ -1,6 +1,10 @@
 self.basePolicy = (function () {
-    var URI_PATTERN = new RegExp('^(?:http|https):\\/\\/.+');
+    var UNSAFE_URI_PATTERN = new RegExp('^(?:javascript):.+');
     var URL_PATTERN = new RegExp('^url\\(');
+
+    function isSafeURI(attribute, uri) {
+        return ('' + uri).match(UNSAFE_URI_PATTERN) === null;
+    }
 
     return {
         '!api': {

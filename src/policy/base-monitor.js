@@ -1,6 +1,10 @@
 define(function () {
-    var URI_PATTERN = new RegExp('^(?:http|https):\\/\\/.+');
+    var UNSAFE_URI_PATTERN = new RegExp('^(?:javascript):.+');
     var URL_PATTERN = new RegExp('^url\\(');
+
+    function isSafeURI(attribute, uri) {
+        return ('' + uri).match(UNSAFE_URI_PATTERN) === null;
+    }
 
     return {
         '!api': {
@@ -19,7 +23,7 @@ define(function () {
                     alt: true,
                     archive: false, // XXX: list of URIs
                     axis: true,
-                    background: URI_PATTERN,
+                    background: isSafeURI,
                     bgcolor: true,
                     border: true,
                     cellpadding: true,
@@ -28,8 +32,9 @@ define(function () {
                     charoff: true,
                     charset: true,
                     checked: true,
-                    cite: URI_PATTERN,
+                    cite: isSafeURI,
                     'class': true,
+                    className: true,
                     classid: false, // XXX: applies to object; should whitelist the ids
                     clear: true,
                     code: false, // XXX: URI; applies to applet
@@ -55,7 +60,7 @@ define(function () {
                     frameborder: true,
                     headers: true,
                     height: true, // XXX: may need to interpose on this, but probably not
-                    href: URI_PATTERN,
+                    href: isSafeURI,
                     hreflang: true,
                     hspace: true,
                     'http-equiv': false, // XXX: applies to meta
@@ -66,7 +71,7 @@ define(function () {
                     lang: true,
                     language: false, // XXX: applies to script
                     link: false, // XXX: applies to body
-                    longdesc: URI_PATTERN,
+                    longdesc: isSafeURI,
                     marginheight: true,
                     maxlength: true,
                     media: false, // XXX: dunno what this does
@@ -97,7 +102,7 @@ define(function () {
                     onselect: false,
                     onsubmit: false,
                     onunload: false,
-                    profile: URI_PATTERN,
+                    profile: isSafeURI,
                     prompt: true,
                     readonly: true,
                     rel: true,
@@ -112,7 +117,7 @@ define(function () {
                     shape: true,
                     size: true,
                     span: true,
-                    src: URI_PATTERN,
+                    src: isSafeURI,
                     standby: false, // XXX: applies to object
                     start: true,
                     style: {
@@ -242,7 +247,7 @@ define(function () {
                     text: true,
                     title: true,
                     type: true,
-                    usemap: URI_PATTERN,
+                    usemap: isSafeURI,
                     valign: true,
                     value: true,
                     valuetype: true, // XXX: check this
@@ -345,7 +350,8 @@ define(function () {
                 tt: true,
                 u: true,
                 ul: true,
-                val: true
+                val: true,
+                'var': true
             }
         }
     };
