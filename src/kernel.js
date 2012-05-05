@@ -1,7 +1,7 @@
 define([
-    'treehouse/sandbox', 'treehouse/util'
+    'treehouse/sandbox', 'treehouse/util', 'treehouse/policy/base-monitor'
 ], 
-function(Sandbox, util) {
+function(Sandbox, util, basePolicy) {
     var sandboxes = {};
     var sandboxIndex = 0;
     var messageHandlers = {};
@@ -69,8 +69,29 @@ function(Sandbox, util) {
         }
     };
 
+    // Adapted from Andrew Dupont's implementation
+    // http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+    function deepExtend(destination, source) {
+        for (var property in source) {
+            if (typeof source[property] === "object" &&
+                source[property] !== null ) {
+                destination[property] = destination[property] || {};
+                deepExtend(destination[property], source[property]);
+            } else {
+                destination[property] = source[property];
+            }
+        }
+        return destination;
+    }
+
+    function setPolicy(newPolicy, currentPolicy) {
+        deepExtend(currentPolicy, newPolicy);
+    }
+
     function initialize(config) {
         config = config || {};
+        config.policy = config.policy || {};
+
         // TODO: handle scripts in HEAD; probably need to just prefix
         //       traversals with 'body' or 'head'
         var guestScripts = Array.prototype.slice.apply(
@@ -82,6 +103,8 @@ function(Sandbox, util) {
         var children = [];
         var toRemove = [];
         var i, j, k, len, worker, selector, script;
+
+        setPolicy(config.policy, basePolicy);
 
         policyScripts.forEach(function (script, scriptIndex, guestScripts) {
             var name = script.getAttribute('data-treehouse-sandbox-name') || 
