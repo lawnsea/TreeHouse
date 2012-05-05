@@ -225,10 +225,11 @@ var initBroker;
         self.window = self.win = doc.createWindow();
 
         // TODO: export the entire DOM interface to self
-        self.Event = jsdom.dom.level3.events.Event;
-        self.MutationEvent = jsdom.dom.level3.events.MutationEvent;
+        window.Event = self.Event = jsdom.dom.level3.events.Event;
+        window.MutationEvent = self.MutationEvent = jsdom.dom.level3.events.MutationEvent;
         self.Node = jsdom.dom.level3.core.Node;
         self.Element = jsdom.dom.level3.core.Element;
+        self.HTMLElement = jsdom.dom.level3.core.HTMLElement;
 
         /*
          * Install a setter and getter on a style property that actually sets
@@ -239,10 +240,16 @@ var initBroker;
 
             Object.defineProperty(CSSStyleDeclaration.prototype, property, {
                 set: function (newValue) {
-                    this._element.setAttribute(name, newValue);
+                    if (this && this._element && this._element.setAttribute) {
+                        this._element.setAttribute(name, newValue);
+                    }
                 },
                 get: function () {
-                    return this._element.getAttribute(name) || '';
+                    if (this && this._element && this._element.setAttribute) {
+                        return this._element.getAttribute(name) || '';
+                    } else {
+                        return '';
+                    }
                 }
             });
         }
@@ -253,7 +260,7 @@ var initBroker;
         addEventListenerImpl = jsdom.dom.level3.core.Node.prototype.addEventListener;
         jsdom.dom.level3.core.Node.prototype.addEventListener = 
             function (type, listener, capturing) {
-                if (this.tagName.toLowerCase() !== 'script' && DISPATCHED_EVENTS[type]) {
+                if (this.tagName && this.tagName.toLowerCase() !== 'script' && DISPATCHED_EVENTS[type]) {
                     _self.postMessage.call(self, {
                         method: 'addEventListener',
                         params: [ serialization.getNodeTraversal(this, doc.body), type, capturing ]
@@ -335,6 +342,8 @@ var initBroker;
             // TODO: if the new node is a SCRIPT, check the policy and import it if allowed
             // TODO: if the new node has onfoo handers, register them and delete the attributes
             //       from the serialized node
+            var origTarget = e.target;
+            var origRelated = e.relatedNode;
 
             related = serialization.getNodeTraversal(e.relatedNode, document.body);
             // get the serialized representation of the target node
