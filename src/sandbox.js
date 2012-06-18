@@ -42,9 +42,9 @@ function(serialization, SortedSet, validate, basePolicy) {
             // FIXME: authorize with application policy. is that necessary?
             // FIXME: do we need to check the type against DISPATCHED_EVENTS?
 
-            console.debug('Adding event listener', node, type, capturing);
+            this.debug('Adding event listener', node, type, capturing);
             node = serialization.traverseToNode(node, child);
-            console.debug('Adding event listener', node, type, capturing);
+            this.debug('Adding event listener', node, type, capturing);
             if (node) {
                 node.addEventListener(type, _.bind(dispatchEvent, this, child));
             }
@@ -100,8 +100,10 @@ function(serialization, SortedSet, validate, basePolicy) {
 
         consoleMethods.forEach(function (method) {
             this[method] = function () {
-                console[method].apply(console,
-                    ['Sandbox ' + this.name].concat(Array.prototype.slice.call(arguments)));
+                if (method === 'error' || method === 'warn') {
+                    console[method].apply(console,
+                        ['Sandbox ' + this.name].concat(Array.prototype.slice.call(arguments)));
+                }
             };
         }, this);
         this.addEventListener('message', _.bind(onMessage, this), false);
@@ -113,7 +115,7 @@ function(serialization, SortedSet, validate, basePolicy) {
      * Default action is to terminate the sandbox
      */
     Sandbox.prototype.onPolicyViolation = function (policyKey) {
-        console.error('Sandbox', this.name, 'violated the base policy and will be terminated');
+        this.error('violated the base policy and will be terminated');
         this.terminate();
     };
 
