@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <title>Hello, Zepto</title>
+  <style>
+  .red { color: red }
+  .blue { color: blue }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <span id="foo"></span>
+  </div>
+  <script src="../demos/hello-zepto.js"
+    type="text/x-treehouse-javascript"
+    data-treehouse-sandbox-name="worker1"
+    data-treehouse-sandbox-children="#root"
+  ></script>
+  <script src="../demos/zepto-policy.js"
+    type="text/x-treehouse-javascript"
+    data-treehouse-sandbox-name="worker1"
+    data-treehouse-policy
+  ></script>
+  <script src="../lib/jsdom/ie10-compatibility.js"></script>
+  <script src="../lib/require.js"></script>
+  <script>
+  // web worker compat
+  window.doc = document;
+  window.win = window;
+
+  require({
+        baseUrl: '../src',
+        packages: [{
+              name: 'jsdom',
+              location: '../lib/jsdom',
+              main: 'jsdom'
+          }, {
+              name: 'node-htmlparser',
+              location: '../lib/jsdom/node-htmlparser'
+          }, {
+            name: 'underscore',
+            location: '../lib/underscore',
+            main: 'underscore'
+        }, {
+            name: 'treehouse',
+            location: './'
+        }]
+    }, [ 'kernel' ], function (kernel) {
+    kernel.initialize();
+  });
+  </script>
+</body>
+</html>
