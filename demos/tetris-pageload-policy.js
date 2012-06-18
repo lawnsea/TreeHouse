@@ -1,0 +1,5 @@
+setPolicy({
+    '!api': {
+        postMessage: true
+    }
+});
