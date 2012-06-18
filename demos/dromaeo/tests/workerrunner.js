@@ -81,6 +81,7 @@
 			setTimeout(function(){
 				// run tests
 				try {
+                    console.warn('Trial', pos + 1, 'of', numTests);
 					start = (new Date()).getTime();
 					
 					if ( runStyle === "runs/s" ) {

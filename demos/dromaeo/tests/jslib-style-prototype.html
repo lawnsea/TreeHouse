@@ -2965,7 +2965,7 @@ the final editorial review.</p>
               callback = cb;
               started = true;
               worker.postMessage('startEm');
-            });
+            }, name);
           } else {
             callback(name, event.data);
           }

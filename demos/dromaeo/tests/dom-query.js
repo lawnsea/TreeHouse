@@ -73,7 +73,6 @@ var html = root.innerHTML;
 	});
 
 	test( "getElementsByName", function(){
-        debugger;
 		for ( var i = 0; i < num * 20; i++ ) {
 			var elems = document.getElementsByName("test" + num);
 			ret = elems[elems.length-1].nodeType;

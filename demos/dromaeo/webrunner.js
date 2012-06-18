@@ -329,6 +329,8 @@
 					initTest(name);
 					
 					totalTests++;
+                    console.error('Definition of', name, 'test', totalTests);
+                    _testsToLoad[name] = true;
 					
 					// Check if we're loading an HTML file
 					if ( test.file.match(/html(?:\\?.+)?$/) ) {
@@ -337,6 +339,7 @@
 						iframe.style.width = "1px";
 						iframe.src = "tests/" + test.file;
 						document.body.appendChild( iframe );
+                        _iframes[name] = iframe;
 					
 					// Otherwise we're loading a pure-JS test
 					} else {
@@ -347,15 +350,24 @@
 		});
 	});
 
+    window._iframes = {};
+    window._testsToLoad = {};
     var callbacks = [];
-    window.registerTest = function (callback) {
+    window.registerTest = function (callback, name) {
         var i = 0;
         var results = {};
 
         function nextTest() {
             if (i < callbacks.length) {
+                var progressEl = document.querySelector('#progress');
+                
+                progressEl.innerHTML += '<p>Starting ' + callbacks[i]._name + '</p>';
+                document.querySelector('#currentTestEl').innerHTML = i + 1;
                 callbacks[i](function (name, data) {
-                    var progressEl = document.querySelector('#progress');
+                    var iframe = _iframes[name];
+                    delete _iframes[name];
+                    iframe.parentNode.removeChild(iframe);
+
                     progressEl.innerHTML += '<p>Completed ' + name + '</p>';
                     results[name] = data;
                     i++;
@@ -370,11 +382,15 @@
         }
 
         numloaded++;
+        callback._name = name;
         callbacks.push(callback);
+        delete _testsToLoad[name];
 
+        console.error('Loaded', name, ' test', numloaded, 'of', totalTests);
 		if (numloaded === totalTests) {
             // run the tests we've loaded
             interval = true;
+            document.querySelector('#totalTestEl').innerHTML = totalTests;
             nextTest();
         }
     }

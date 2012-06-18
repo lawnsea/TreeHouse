@@ -15,6 +15,7 @@
 	category: "Dromaeo JavaScript Tests",
 	tags: ["string","array","looping","bitops"]
 },
+/*
 "dromaeo-core-eval": {
 	file: "jsonlyrunner.html?dromaeo-core-eval",
 	name: "Code Evaluation",
@@ -23,6 +24,7 @@
 	category: "Dromaeo JavaScript Tests",
 	tags: ["eval","microtest"]
 },
+*/
 "dromaeo-object-array": {
 	file: "jsonlyrunner.html?dromaeo-object-array",
 	name: "Arrays",
@@ -161,6 +163,8 @@
 	category: "SunSpider JavaScript Tests",
 	tags: ["looping", "bitops"]
 },
+/*
+// Firefox chokes on base64 decoding in this test
 "sunspider-bitops-nsieve-bits": {
 	file: "jsonlyrunner.html?sunspider-bitops-nsieve-bits",
 	name: "Prime Number Computation (2)",
@@ -169,6 +173,7 @@
 	category: "SunSpider JavaScript Tests",
 	tags: ["looping", "bitops", "array"]
 },
+*/
 "sunspider-controlflow-recursive": {
 	file: "jsonlyrunner.html?sunspider-controlflow-recursive",
 	name: "Recursive Number Calculation",
@@ -313,7 +318,6 @@
 	category: "Dromaeo DOM Tests",
 	tags: ["dom","traverse"]
 },
-/*
 "jslib-attr-jquery": {
 	file: "jslib-attr-jquery.html",
 	name: "DOM Attributes (jQuery)",
@@ -354,7 +358,6 @@
 	category: "JavaScript Library Tests",
 	tags: ["dom","jslib","jquery","traverse"]
 },
-*/
 "jslib-attr-prototype": {
 	file: "jslib-attr-prototype.html",
 	name: "DOM Attributes (Prototype)",
