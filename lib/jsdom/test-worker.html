@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<body>
+  <script>
+  var worker = new Worker('worker.js');
+
+  worker.addEventListener('message', function (e) {
+      console.log('Worker said: ', e.data);
+  }, false);
+  </script>
+</body>
+</html>
+
+

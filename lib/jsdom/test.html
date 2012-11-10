@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<body>
+  <div><p>Hello, jsdom</p></div>
+  <script src="ie10-compatibility.js"></script>
+  <script data-main="jsdom" src="require.js"></script>
+  <script>
+  function onMutate(e) {
+    console.log(e);
+  }
+
+  require(['jsdom'], function(jsdom) {
+      var doc = jsdom.jsdom("<html><head></head><body>hello world</body></html>", null, {
+            features: {
+              QuerySelector: true
+            }
+          }),
+          win = doc.createWindow(),
+          p;
+
+      console.log(win.document.innerHTML);
+      // output: '<html><head></head><body>hello world</body></html>'
+
+      console.log(win.innerWidth)
+      // output: 1024
+
+      console.log(typeof win.document.getElementsByClassName);
+      // outputs: function    
+
+      doc.addEventListener('DOMSubtreeModified', onMutate, false);
+      
+      p = doc.createElement('p');
+      doc.body.appendChild(p);
+      p.innerHTML = 'hello, MutationEvent!';
+      p.innerHTML += 'what will this be?';
+      p.style.color = 'red';
+      console.log(p.style);
+      p.id = 'foo';
+      p.title = 'bar';
+      console.log(doc.body.innerHTML);
+  });
+  </script>
+</body>
+</html>
+
