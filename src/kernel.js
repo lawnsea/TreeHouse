@@ -12,7 +12,7 @@ function(Sandbox, util, basePolicy) {
         var i, attr, attrs;
 
         // Map data-treehouse-style-foo -> el.style.foo
-        if (el.hasAttributes()) {
+        if (typeof el.hasAttributes === 'function' && el.hasAttributes()) {
             attrs = el.attributes;
 
             for (i = 0; i < attrs.length; i++) {
